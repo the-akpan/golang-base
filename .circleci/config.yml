@@ -41,18 +41,18 @@ jobs:
     steps:
       - checkout
       - run: 
-        name: Docker Login
-        command: echo "$DOCKERHUB_PASSWORD" | docker login --username $DOCKERHUB_USERNAME --password-stdin
+          name: Docker Login
+          command: echo "$DOCKERHUB_PASSWORD" | docker login --username $DOCKERHUB_USERNAME --password-stdin
       
       # build the application image
       - run: 
-        name: Docker Build
-        command: docker build -t $DOCKERHUB_USERNAME/images:golang-base-<<parameters.environment>> .
+          name: Docker Build
+          command: docker build -t $DOCKERHUB_USERNAME/images:golang-base-<<parameters.environment>> .
 
       # deploy the image
       - run: 
-        name: Docker Deploy
-        command: docker push $DOCKERHUB_USERNAME/images:golang-base-<<parameters.environment>>
+          name: Docker Deploy
+          command: docker push $DOCKERHUB_USERNAME/images:golang-base-<<parameters.environment>>
 
       - slack/notify:
           event: fail
