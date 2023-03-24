@@ -2,51 +2,64 @@ version: 2.1
 
 orbs:
   slack: circleci/slack@4.1
-  docker: circleci/docker@2.2.0
   
 
 jobs:
   build-and-test-app:
-  docker:
-    - image: cimg/go:1.20.2
-  steps:
-      - checkout
-      - run: 
-        name: Install dependencies
-        command: go mod vendor && go install github.com/swaggo/swag/cmd/swag@latest
-      - run:
-        name: Run format
-        command: gofmt -w *.go
-      - run:
-        name: Run linter
-        command: golint models/ utils/ controllers/ testing/ .
-      - run:
-        name: Run go vet analyzer
-        command: go vet
-      - run:
-        name: Run test
-        command: cd testing && go test
-      - run:
-        name: Run swagger
-        command: swag init
-      - run:
-        name: Build app
-        command: ./build.sh
+    docker:
+      - image: cimg/go:1.20.2
+    steps:
+        - checkout
+        - run: 
+            name: Install dependencies
+            command: go mod vendor && go install github.com/swaggo/swag/cmd/swag@latest && go install golang.org/x/lint/golint@latest
+        - run:
+            name: Run gofmt for formatting
+            command: gofmt -w *.go
+        - run:
+            name: Run golint for linting
+            command: golint models/ utils/ controllers/ testing/ .
+        - run:
+            name: Run go vet analyzer
+            command: go vet
+        - run:
+            name: Run test
+            command: cd testing && go test
+        - run:
+            name: Run swag init to generate swagger docs
+            command: swag init
+        - run:
+            name: Build app
+            command: ./build.sh
 
   build-and-push-docker-image:
     parameters:
       environment:
         type: string
-    executor: docker/machine
+    docker:
+      - image: cimg/base:2023.03
     steps:
       - checkout
-      - docker/check
-      - docker/build:
-          image: $DOCKER_LOGIN/images:golang-base-<<parameters.environment>>
+      - setup_remote_docker
+      - run: 
+          name: Docker Login
+          command: echo "$DOCKERHUB_PASSWORD" | docker login --username $DOCKERHUB_USERNAME --password-stdin
+      
+      # build the application image
+      - run: 
+          name: Docker Build
+          command: docker build -t $DOCKERHUB_USERNAME/images:golang-base-<<parameters.environment>> .
+
+      # deploy the image
+      - run: 
+          name: Docker Deploy
+          command: docker push $DOCKERHUB_USERNAME/images:golang-base-<<parameters.environment>>
+
       - slack/notify:
           event: fail
           channel: 'devops-notifications'
           template: basic_fail_1
+
       - slack/notify:
           event: pass
           channel: 'devops-notifications'
