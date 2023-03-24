@@ -13,7 +13,7 @@ jobs:
         - checkout
         - run: 
             name: Install dependencies
-            command: go mod vendor && go install github.com/swaggo/swag/cmd/swag@latest
+            command: go mod vendor && go install github.com/swaggo/swag/cmd/swag@latest && go install golang.org/x/lint/golint@latest
         - run:
             name: Run format
             command: gofmt -w *.go
