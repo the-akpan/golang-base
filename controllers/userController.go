@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"golang-base/models"
+	"golang-base/utils"
 
 	"github.com/gin-gonic/gin"
 )
@@ -24,7 +25,7 @@ type ReqUpdateUser struct {
 }
 
 func UserRoutes(incomingRoutes *gin.Engine) {
-	rootPath := fmt.Sprintf("/%s", "users")
+	rootPath := fmt.Sprintf("%s/%s", utils.BASEPATH_V1, "users")
 	rootPathId := fmt.Sprintf("%s/:id", rootPath)
 
 	incomingRoutes.GET(rootPath, GetUsers)
@@ -34,6 +35,16 @@ func UserRoutes(incomingRoutes *gin.Engine) {
 	incomingRoutes.DELETE(rootPathId, DeleteUser)
 }
 
+// @BasePath /api/v1
+// GetUsers godoc
+// @Summary get all users
+// @Schemes http https
+// @Description get all users
+// @Tags user getusers
+// @Accept json
+// @Produce json
+// @Success 200 {object} models.User
+// @Router /users [get]
 func GetUsers(c *gin.Context) {
 	var users []models.User
 
@@ -45,6 +56,17 @@ func GetUsers(c *gin.Context) {
 	c.JSON(http.StatusOK, users)
 }
 
+// @BasePath /api/v1
+// GetUser godoc
+// @Summary get a single user
+// @Schemes http https
+// @Description get a single user
+// @Tags user getusers
+// @Accept json
+// @Produce json
+// @Success 200 {object} models.User
+// @Router /user [get]
+// @Param id path string true "ID"
 func GetUser(c *gin.Context) {
 	var user models.User
 

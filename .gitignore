@@ -10,3 +10,4 @@ logger
 *.db
 .env
 golang-base
+app.elf
