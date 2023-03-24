@@ -2,7 +2,6 @@ version: 2.1
 
 orbs:
   slack: circleci/slack@4.1
-  docker: circleci/docker@2.2.0
   
 
 jobs:
@@ -39,21 +38,27 @@ jobs:
         type: string
     docker:
       - image: cimg/base:2023.03
-        auth:
-          username: $DOCKERHUB_USERNAME
-          password: $DOCKERHUB_PASSWORD 
     steps:
       - checkout
-      - run:
-          name: "echo environment variables from docker context"
-          command: echo $DOCKERHUB_USERNAME && echo $DOCKERHUB_PASSWORD
-      - docker/check
-      - docker/build:
-          image: $DOCKERHUB_USERNAME/images:golang-base-<<parameters.environment>>
+      - run: 
+        name: Docker Login
+        command: echo "$DOCKERHUB_PASSWORD" | docker login --username $DOCKERHUB_USERNAME --password-stdin
+      
+      # build the application image
+      - run: 
+        name: Docker Build
+        command: docker build -t $DOCKERHUB_USERNAME/images:golang-base-<<parameters.environment>> .
+
+      # deploy the image
+      - run: 
+        name: Docker Deploy
+        command: docker push $DOCKERHUB_USERNAME/images:golang-base-<<parameters.environment>>
+
       - slack/notify:
           event: fail
           channel: 'devops-notifications'
           template: basic_fail_1
+
       - slack/notify:
           event: pass
           channel: 'devops-notifications'
