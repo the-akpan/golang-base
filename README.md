@@ -47,8 +47,8 @@ go mod vendor
 Create `.env` file based on `.env.sample` and fill in variables from from a suitable source.
 
 
-### To Generate swagger
-#### TLDR: running build.sh will generate swagger docs.
+### Generate swagger
+TLDR: running build.sh will generate swagger docs.
 
 1. Add comments to your API source code, [See Declarative Comments Format](https://github.com/swaggo/swag/blob/master/README.md#declarative-comments-format).
 2. Download [Swag](https://github.com/swaggo/swag) for Go by using:
