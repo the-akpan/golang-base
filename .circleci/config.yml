@@ -12,26 +12,26 @@ jobs:
     steps:
         - checkout
         - run: 
-          name: Install dependencies
-          command: go mod vendor && go install github.com/swaggo/swag/cmd/swag@latest
+            name: Install dependencies
+            command: go mod vendor && go install github.com/swaggo/swag/cmd/swag@latest
         - run:
-          name: Run format
-          command: gofmt -w *.go
+            name: Run format
+            command: gofmt -w *.go
         - run:
-          name: Run linter
-          command: golint models/ utils/ controllers/ testing/ .
+            name: Run linter
+            command: golint models/ utils/ controllers/ testing/ .
         - run:
-          name: Run go vet analyzer
-          command: go vet
+            name: Run go vet analyzer
+            command: go vet
         - run:
-          name: Run test
-          command: cd testing && go test
+            name: Run test
+            command: cd testing && go test
         - run:
-          name: Run swagger
-          command: swag init
+            name: Run swagger
+            command: swag init
         - run:
-          name: Build app
-          command: ./build.sh
+            name: Build app
+            command: ./build.sh
 
   build-and-push-docker-image:
     parameters:
