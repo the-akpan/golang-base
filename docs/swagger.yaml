@@ -1,0 +1,78 @@
+basePath: /
+definitions:
+  models.User:
+    properties:
+      createdat:
+        type: string
+      createdby:
+        type: string
+      email:
+        type: string
+      id:
+        type: string
+      mobile:
+        type: string
+      password:
+        type: string
+      updatedat:
+        type: string
+      updatedby:
+        type: string
+      username:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /ping:
+    get:
+      consumes:
+      - application/json
+      description: do ping
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: message":"pong"}
+          schema:
+            type: string
+      summary: ping example
+      tags:
+      - ping
+  /user:
+    get:
+      consumes:
+      - application/json
+      description: get a single user
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+      summary: get a single user
+      tags:
+      - user getusers
+  /users:
+    get:
+      consumes:
+      - application/json
+      description: get all users
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+      summary: get all users
+      tags:
+      - user getusers
+swagger: "2.0"

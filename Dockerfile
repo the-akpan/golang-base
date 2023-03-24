@@ -2,7 +2,8 @@ FROM golang:1.17.2-bullseye AS golang-base
 
 WORKDIR /go/src/app
 COPY . .
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o app.elf && chmod +x app.elf
+# RUN go build -o app.elf && chmod +x app.elf
+RUN ./build.sh
 
 
 FROM alpine:latest
