@@ -1,5 +1,36 @@
-basePath: /
 definitions:
+  controllers.ReqNewUser:
+    properties:
+      email:
+        type: string
+      mobile:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - email
+    - mobile
+    - password
+    - username
+    type: object
+  controllers.ReqUpdateUser:
+    properties:
+      email:
+        type: string
+      mobile:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - email
+    - mobile
+    - password
+    - username
+    type: object
   models.User:
     properties:
       createdat:
@@ -21,6 +52,11 @@ definitions:
       username:
         type: string
     type: object
+  utils.Message:
+    properties:
+      message:
+        type: string
+    type: object
 info:
   contact: {}
 paths:
@@ -33,13 +69,33 @@ paths:
       - application/json
       responses:
         "200":
-          description: message":"pong"}
+          description: OK
           schema:
-            type: string
+            $ref: '#/definitions/utils.Message'
       summary: ping example
       tags:
       - ping
   /user:
+    delete:
+      consumes:
+      - application/json
+      description: delete a single user
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User deleted successfully
+          schema:
+            $ref: '#/definitions/utils.Message'
+      summary: delete a single user
+      tags:
+      - user delete
     get:
       consumes:
       - application/json
@@ -60,6 +116,48 @@ paths:
       summary: get a single user
       tags:
       - user getusers
+    post:
+      consumes:
+      - application/json
+      description: create a single user
+      parameters:
+      - description: New User
+        in: body
+        name: ReqNewUser
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.ReqNewUser'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+      summary: create user
+      tags:
+      - user create post
+    put:
+      consumes:
+      - application/json
+      description: create a single user
+      parameters:
+      - description: Update User
+        in: body
+        name: ReqUpdateUser
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.ReqUpdateUser'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User updated successfully
+          schema:
+            $ref: '#/definitions/utils.Message'
+      summary: create user
+      tags:
+      - user create post
   /users:
     get:
       consumes:

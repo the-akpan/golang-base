@@ -1,0 +1,143 @@
+version: 2.1
+
+orbs:
+  slack: circleci/slack@4.1
+  docker: circleci/docker@2.2.0
+  
+
+jobs:
+  build-and-test-app:
+  docker:
+    - image: cimg/go:1.20.2
+  steps:
+      - checkout
+      - run: 
+        name: Install dependencies
+        command: go mod vendor && go install github.com/swaggo/swag/cmd/swag@latest
+      - run:
+        name: Run format
+        command: gofmt -w *.go
+      - run:
+        name: Run linter
+        command: golint models/ utils/ controllers/ testing/ .
+      - run:
+        name: Run go vet analyzer
+        command: go vet
+      - run:
+        name: Run test
+        command: cd testing && go test
+      - run:
+        name: Run swagger
+        command: swag init
+      - run:
+        name: Build app
+        command: ./build.sh
+
+  build-and-push-docker-image:
+    parameters:
+      environment:
+        type: string
+    executor: docker/machine
+    steps:
+      - checkout
+      - docker/check
+      - docker/build:
+          image: $DOCKER_LOGIN/images:golang-base-<<parameters.environment>>
+      - slack/notify:
+          event: fail
+          channel: 'devops-notifications'
+          template: basic_fail_1
+      - slack/notify:
+          event: pass
+          channel: 'devops-notifications'
+          template: success_tagged_deploy_1
+
+workflows:
+  feature:
+    when:
+      not:
+        equal: [main, <<pipeline.git.branch>>]
+    jobs:
+      - build-and-test-app:
+          context:
+            - docker
+            - slack
+      - hold-deploy-to-dev:
+          type: approval
+          requires:
+            - build-and-test-app
+      - hold-deploy-to-test:
+          type: approval
+          requires:
+            - build-and-test-app
+      - build-and-push-docker-image:
+          name: deploy-to-dev
+          context:
+            - docker
+            - slack
+          requires:
+            - hold-deploy-to-dev
+          environment: dev
+      - build-and-push-docker-image:
+          name: deploy-to-test
+          context:
+            - docker
+            - slack
+          requires:
+            - hold-deploy-to-test
+          environment: test
+
+  stage:
+    when:
+      equal: [main, <<pipeline.git.branch>>]
+    jobs:
+      - build-and-test-app:
+          context:
+            - docker
+            - slack
+      - build-and-push-docker-image:
+          name: deploy-to-staging
+          context:
+            - docker
+            - slack
+          requires:
+            - build-and-test-app
+          environment: stage
+      - hold-deploy-to-dev:
+          type: approval
+          requires:
+            - build-and-test-app
+      - hold-deploy-to-test:
+          type: approval
+          requires:
+            - build-and-test-app
+      - build-and-push-docker-image:
+          name: deploy-to-dev
+          context:
+            - docker
+            - slack
+          requires:
+            - hold-deploy-to-dev
+          environment: dev
+      - build-and-push-docker-image:
+          name: deploy-to-test
+          context:
+            - docker
+            - slack
+          requires:
+            - hold-deploy-to-test
+          environment: test
+
+  prod:
+    jobs:
+      - build-and-push-docker-image:
+          name: deploy-to-prod
+          context:
+            - docker
+            - slack
+          environment: prod
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              ignore: /.*/

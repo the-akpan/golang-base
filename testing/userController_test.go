@@ -16,7 +16,7 @@ import (
 
 func TestGetUser(t *testing.T) {
 	SetUpMockDB()
-	defer models.DB.Where("1=1").Delete(&models.User{})
+	defer RemoveMockDB()
 
 	mockResponse := models.User{Base: models.Base{ID: uuid.FromStringOrNil("00000000-0000-0000-0000-000000000001")}, Email: "test1@localhost.com", Mobile: "0801", Username: "test1", Password: "test1test1"}
 
@@ -81,6 +81,8 @@ func TestGetUsers(t *testing.T) {
 
 func TestPostUser(t *testing.T) {
 	SetUpMockDB()
+	defer RemoveMockDB()
+
 	mockRequest := controllers.ReqNewUser{Email: "test1@localhost.com", Mobile: "0801", Username: "test1x", Password: "test1test1"}
 	var mockRequestBuf bytes.Buffer
 	if err := json.NewEncoder(&mockRequestBuf).Encode(mockRequest); err != nil {

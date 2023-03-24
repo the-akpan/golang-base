@@ -9,8 +9,12 @@ import (
 
 func SetUpMockDB() {
 	os.Setenv("DBTYPE", "sqlite")
-	os.Setenv("SQLITE", "mock.db")
+	os.Setenv("Sqlite", "mock.db")
 	models.ConnectDatabaseMock()
+}
+
+func RemoveMockDB() {
+	os.Remove("mock.db")
 }
 
 func SetUpRouter() *gin.Engine {
