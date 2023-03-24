@@ -31,9 +31,9 @@ const docTemplate = `{
                 "summary": "ping example",
                 "responses": {
                     "200": {
-                        "description": "message\":\"pong\"}",
+                        "description": "OK",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/utils.Message"
                         }
                     }
                 }
@@ -69,6 +69,100 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "put": {
+                "description": "create a single user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user create post"
+                ],
+                "summary": "create user",
+                "parameters": [
+                    {
+                        "description": "Update User",
+                        "name": "ReqUpdateUser",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controllers.ReqUpdateUser"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User updated successfully",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Message"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "create a single user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user create post"
+                ],
+                "summary": "create user",
+                "parameters": [
+                    {
+                        "description": "New User",
+                        "name": "ReqNewUser",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controllers.ReqNewUser"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.User"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "delete a single user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user delete"
+                ],
+                "summary": "delete a single user",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User deleted successfully",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Message"
+                        }
+                    }
+                }
             }
         },
         "/users": {
@@ -96,6 +190,52 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "controllers.ReqNewUser": {
+            "type": "object",
+            "required": [
+                "email",
+                "mobile",
+                "password",
+                "username"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "mobile": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "controllers.ReqUpdateUser": {
+            "type": "object",
+            "required": [
+                "email",
+                "mobile",
+                "password",
+                "username"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "mobile": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
         "models.User": {
             "type": "object",
             "properties": {
@@ -127,6 +267,14 @@ const docTemplate = `{
                     "type": "string"
                 }
             }
+        },
+        "utils.Message": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
         }
     }
 }`
@@ -135,7 +283,7 @@ const docTemplate = `{
 var SwaggerInfo = &swag.Spec{
 	Version:          "",
 	Host:             "",
-	BasePath:         "/",
+	BasePath:         "",
 	Schemes:          []string{},
 	Title:            "",
 	Description:      "",

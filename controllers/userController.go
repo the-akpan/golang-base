@@ -10,6 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// ReqNewUser is the request body for creating a new user
 type ReqNewUser struct {
 	Email    string `json:"email" binding:"required,email"`
 	Mobile   string `json:"mobile" binding:"required"`
@@ -17,6 +18,7 @@ type ReqNewUser struct {
 	Password string `json:"password" binding:"required"`
 }
 
+// ReqUpdateUser is the request body for updating a user
 type ReqUpdateUser struct {
 	Email    string `json:"email" binding:"required,email"`
 	Mobile   string `json:"mobile" binding:"required"`
@@ -24,19 +26,20 @@ type ReqUpdateUser struct {
 	Password string `json:"password" binding:"required"`
 }
 
+// UserRoutes is the route handler for user routes
 func UserRoutes(incomingRoutes *gin.Engine) {
-	rootPath := fmt.Sprintf("%s/%s", utils.BASEPATH_V1, "users")
-	rootPathId := fmt.Sprintf("%s/:id", rootPath)
+	rootPath := fmt.Sprintf("%s/%s", utils.BasepathV1, "users")
+	rootPathID := fmt.Sprintf("%s/:id", rootPath)
 
 	incomingRoutes.GET(rootPath, GetUsers)
-	incomingRoutes.GET(rootPathId, GetUser)
+	incomingRoutes.GET(rootPathID, GetUser)
 	incomingRoutes.POST(rootPath, PostUser)
-	incomingRoutes.PUT(rootPathId, PutUser)
-	incomingRoutes.DELETE(rootPathId, DeleteUser)
+	incomingRoutes.PUT(rootPathID, PutUser)
+	incomingRoutes.DELETE(rootPathID, DeleteUser)
 }
 
-// @BasePath /api/v1
 // GetUsers godoc
+// @BasePath /api/v1
 // @Summary get all users
 // @Schemes http https
 // @Description get all users
@@ -56,8 +59,8 @@ func GetUsers(c *gin.Context) {
 	c.JSON(http.StatusOK, users)
 }
 
-// @BasePath /api/v1
 // GetUser godoc
+// @BasePath /api/v1
 // @Summary get a single user
 // @Schemes http https
 // @Description get a single user
@@ -79,6 +82,17 @@ func GetUser(c *gin.Context) {
 	c.JSON(http.StatusOK, user)
 }
 
+// PostUser godoc
+// @BasePath /api/v1
+// @Summary create user
+// @Schemes http https
+// @Description create a single user
+// @Tags user create post
+// @Accept json
+// @Produce json
+// @Success 200 {object} models.User
+// @Router /user [post]
+// @Param ReqNewUser body controllers.ReqNewUser true "New User"
 func PostUser(c *gin.Context) {
 	var user ReqNewUser
 
@@ -97,6 +111,17 @@ func PostUser(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"id": newUser.ID})
 }
 
+// PutUser godoc
+// @BasePath /api/v1
+// @Summary create user
+// @Schemes http https
+// @Description create a single user
+// @Tags user create post
+// @Accept json
+// @Produce json
+// @Success 200 {object} utils.Message "User updated successfully"
+// @Router /user [put]
+// @Param ReqUpdateUser body controllers.ReqUpdateUser true "Update User"
 func PutUser(c *gin.Context) {
 	var user ReqUpdateUser
 
@@ -122,9 +147,20 @@ func PutUser(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "User updated successfully"})
+	c.JSON(http.StatusOK, utils.Message{Message: "User updated successfully"})
 }
 
+// DeleteUser godoc
+// @BasePath /api/v1
+// @Summary delete a single user
+// @Schemes http https
+// @Description delete a single user
+// @Tags user delete
+// @Accept json
+// @Produce json
+// @Success 200 {object} utils.Message "User deleted successfully"
+// @Router /user [delete]
+// @Param id path string true "ID"
 func DeleteUser(c *gin.Context) {
 	var user models.User
 
@@ -138,5 +174,5 @@ func DeleteUser(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "User deleted successfully"})
+	c.JSON(http.StatusOK, gin.H{"message": utils.Message{Message: "User deleted successfully"}})
 }

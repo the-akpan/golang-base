@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-//startLogger ...
+//StartLogger ...
 func StartLogger(logPath string) {
 	log.SetFlags(log.Lmicroseconds | log.Lshortfile)
 

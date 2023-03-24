@@ -8,6 +8,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// User model
 type User struct {
 	Base
 	Email    string `json:"email" gorm:"size:100;index:,unique;not null;"`
@@ -16,6 +17,7 @@ type User struct {
 	Password string `json:"password" gorm:"size:30;:,"`
 }
 
+// BeforeCreate hook
 func (user *User) BeforeCreate(tx *gorm.DB) error {
 
 	if err := user.Base.BeforeCreate(tx); err != nil {
@@ -36,5 +38,13 @@ func (user *User) BeforeCreate(tx *gorm.DB) error {
 	}
 	tx.Statement.SetColumn("Password", pw)
 
+	return nil
+}
+
+//BeforeUpdate hook
+func (user *User) BeforeUpdate(tx *gorm.DB) error {
+	if err := user.Base.BeforeCreate(tx); err != nil {
+		return err
+	}
 	return nil
 }

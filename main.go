@@ -20,10 +20,10 @@ func main() {
 	app := gin.Default()
 	models.ConnectDatabase()
 
-	app.GET(utils.BASEPATH_V1+"/ping", GetHealth)
+	app.GET(utils.BasepathV1+"/ping", GetHealth)
 	controllers.UserRoutes(app)
 
-	docs.SwaggerInfo.BasePath = utils.BASEPATH_V1
+	docs.SwaggerInfo.BasePath = utils.BasepathV1
 	app.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
 	var port string
@@ -33,8 +33,8 @@ func main() {
 	app.Run(":" + port)
 }
 
+// GetHealth godoc
 // @BasePath /
-
 // PingExample godoc
 // @Summary ping example
 // @Schemes http https
@@ -42,8 +42,8 @@ func main() {
 // @Tags ping
 // @Accept json
 // @Produce json
-// @Success 200 {string} {"message":"pong"}
+// @Success 200 {object} utils.Message
 // @Router /ping [get]
 func GetHealth(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{"message": "pong"})
+	c.JSON(http.StatusOK, utils.Message{Message: "pong"})
 }

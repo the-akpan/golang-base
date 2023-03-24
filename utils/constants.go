@@ -1,19 +1,26 @@
 package utils
 
 const (
-	// DBTYPE is the type of database to use
-	DBTYPE = "DBTYPE"
+	// DbType is the type of database to use
+	DbType = "DBTYPE"
 
-	// SQLITE is the name of the sqlite database
-	SQLITE = "SQLITE"
+	// Sqlite is the name of the sqlite database
+	Sqlite = "Sqlite"
 
-	// POSTGRES is the name of the postgres database
-	POSTGRES = "POSTGRES"
+	// Postgres is the name of the postgres database
+	Postgres = "POSTGRES"
 
-	// MYSQL is the name of the mysql database
-	MYSQL = "MYSQL"
+	// Mysql is the name of the mysql database
+	Mysql = "MYSQL"
 
-	BASEPATH_V1 = "/api/v1"
+	// BasepathV1 is the base path for v1 of the api
+	BasepathV1 = "/api/v1"
 
-	BASEPATH_V2 = "/api/v2"
+	// BasepathV2 is the base path for v2 of the api
+	BasepathV2 = "/api/v2"
 )
+
+//Message is a simple message
+type Message struct {
+	Message string `json:"message"`
+}
