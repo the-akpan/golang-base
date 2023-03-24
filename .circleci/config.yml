@@ -15,10 +15,10 @@ jobs:
             name: Install dependencies
             command: go mod vendor && go install github.com/swaggo/swag/cmd/swag@latest && go install golang.org/x/lint/golint@latest
         - run:
-            name: Run format
+            name: Run gofmt for formatting
             command: gofmt -w *.go
         - run:
-            name: Run linter
+            name: Run golint for linting
             command: golint models/ utils/ controllers/ testing/ .
         - run:
             name: Run go vet analyzer
@@ -27,7 +27,7 @@ jobs:
             name: Run test
             command: cd testing && go test
         - run:
-            name: Run swagger
+            name: Run swag init to generate swagger docs
             command: swag init
         - run:
             name: Build app
@@ -37,12 +37,16 @@ jobs:
     parameters:
       environment:
         type: string
-    executor: docker/machine
+    docker:
+      - image: cimg/base:2023.03
+      auth:
+        username: $DOCKERHUB_USERNAME
+        password: $DOCKERHUB_PASSWORD 
     steps:
       - checkout
       - docker/check
       - docker/build:
-          image: $DOCKER_LOGIN/images:golang-base-<<parameters.environment>>
+          image: $DOCKERHUB_USERNAME/images:golang-base-<<parameters.environment>>
       - slack/notify:
           event: fail
           channel: 'devops-notifications'
