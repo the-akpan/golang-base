@@ -44,6 +44,9 @@ jobs:
           password: $DOCKERHUB_PASSWORD 
     steps:
       - checkout
+      - run:
+          name: "echo environment variables from docker context"
+          command: echo $DOCKERHUB_USERNAME && echo $DOCKERHUB_PASSWORD
       - docker/check
       - docker/build:
           image: $DOCKERHUB_USERNAME/images:golang-base-<<parameters.environment>>
