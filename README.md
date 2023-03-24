@@ -14,7 +14,7 @@
 
 # 🧐 Business context
 
-The goal of the project is to create a layer of communication between for the frontend. 
+The goal of the project is to create a golang codebase for backend apis
 ---
 
 # 🔨 Technology stack
@@ -32,7 +32,7 @@ The goal of the project is to create a layer of communication between for the fr
 
 ### Clone this repo
 
-To install this project, first clone repo to your machine (use SSH) and run
+To install this project, first clone repo to your machine (use SSH) and run build.sh
 
 ### Install packages
 
@@ -44,8 +44,7 @@ go mod vendor
 
 ### Setup .env file
 
-Create `.env` file based on `.env.sample` and fill in variables from from a suitable source.
-
+Create `.env` file based on `.env.sample` and fill in variables from a suitable source.
 
 ### Generate swagger
 TLDR: running build.sh will generate swagger docs.
